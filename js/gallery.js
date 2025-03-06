@@ -65,29 +65,38 @@ const images = [
 ];
 
 const galleryImg = document.querySelector(".gallery");
-for (const image of images) {
-  const { preview, original, description } = image;
-  //   galleryImg.preventDefault();
-  galleryImg.insertAdjacentHTML(
-    "beforeend",
-    `<li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </li>`
-  );
+// rendering
+galleryImg.insertAdjacentHTML("beforeend", createCards(images));
+// delegation
+galleryImg.addEventListener("click", moduleFunction);
+
+function createCards(images) {
+  return images
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery-item">
+<a class="gallery-link" href="${original}">
+<img
+class="gallery-image"
+src="${preview}"
+data-source="${original}"
+alt="${description}"
+/>
+</a>
+</li>`;
+    })
+    .join("");
 }
 
-galleryImg.addEventListener("click", moduleFunction);
 function moduleFunction(event) {
   event.preventDefault();
   if (event.target.tagName != "IMG") {
     return;
   }
-  console.log(event.target.dataset.source);
+  const origPhoto = event.target.dataset.source;
+  const photoDescr = event.target.alt;
+
+  const instance = basicLightbox.create(
+    `<div><img src="${origPhoto}" alt="${photoDescr}" /></div>`
+  );
+  instance.show();
 }
